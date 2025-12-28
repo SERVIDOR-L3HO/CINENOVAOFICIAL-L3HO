@@ -1,109 +1,122 @@
-// Movie data - using a fallback since the requested API is having issues
-const movies = [
-    {
-        id: 1,
-        title: "Dune: Part Two",
-        image: "https://image.tmdb.org/t/p/w500/1pdfbe1vOZ4Lfbw7G9psZfs9Sqz.jpg",
-        backdrop: "https://image.tmdb.org/t/p/original/8YvL9YjA3y0O7zE7fHqO0S6Z4O6.jpg",
-        rating: 8.4,
-        overview: "Paul Atreides se une a Chani y a los Fremen mientras busca venganza contra los conspiradores que destruyeron a su familia.",
-        year: 2024
-    },
-    {
-        id: 2,
-        title: "Godzilla x Kong",
-        image: "https://image.tmdb.org/t/p/w500/v499v88pXpU0I7r4R8mQv8W0A6C.jpg",
-        backdrop: "https://image.tmdb.org/t/p/original/qr99MCHh5499v88pXpU0I7r4R8m.jpg",
-        rating: 7.2,
-        overview: "Una aventura cinematográfica completamente nueva, que enfrentará al todopoderoso Kong y al temible Godzilla contra una colosal amenaza desconocida.",
-        year: 2024
-    },
-    {
-        id: 3,
-        title: "Oppenheimer",
-        image: "https://image.tmdb.org/t/p/w500/8Gxv0mYmUj9mS0S6Z4O6.jpg",
-        backdrop: "https://image.tmdb.org/t/p/original/8Gxv0mYmUj9mS0S6Z4O6.jpg",
-        rating: 8.9,
-        overview: "La historia del físico estadounidense J. Robert Oppenheimer y su papel en el desarrollo de la bomba atómica.",
-        year: 2023
-    },
-    {
-        id: 4,
-        title: "Spider-Man: Across the Spider-Verse",
-        image: "https://image.tmdb.org/t/p/w500/8Vt6m9ueYv8S0S6Z4O6.jpg",
-        backdrop: "https://image.tmdb.org/t/p/original/8Vt6m9ueYv8S0S6Z4O6.jpg",
-        rating: 9.1,
-        overview: "Miles Morales regresa para el siguiente capítulo de la saga ganadora del Oscar Spider-Verse.",
-        year: 2023
-    },
-    {
-        id: 5,
-        title: "John Wick: Chapter 4",
-        image: "https://image.tmdb.org/t/p/w500/h5v9v88pXpU0I7r4R8mQv8W0A6C.jpg",
-        backdrop: "https://image.tmdb.org/t/p/original/h5v9v88pXpU0I7r4R8mQv8W0A6C.jpg",
-        rating: 8.2,
-        overview: "John Wick descubre un camino para derrotar a la Mesa Alta.",
-        year: 2023
-    },
-    {
-        id: 6,
-        title: "The Batman",
-        image: "https://image.tmdb.org/t/p/w500/74xTEgt7R36mS0S6Z4O6.jpg",
-        backdrop: "https://image.tmdb.org/t/p/original/74xTEgt7R36mS0S6Z4O6.jpg",
-        rating: 8.5,
-        overview: "En su segundo año luchando contra el crimen, Batman explora la corrupción que existe en la ciudad de Gotham.",
-        year: 2022
-    }
-];
+// Official API Base URL
+const API_BASE = "https://cinenovaoficial.vercel.app/api";
+
+let allMovies = [];
+let currentType = 'movies';
 
 const movieGrid = document.getElementById('movieGrid');
 const modal = document.getElementById('movieModal');
 const modalBody = document.getElementById('modalBody');
 const closeModal = document.querySelector('.close-modal');
 const searchInput = document.getElementById('movieSearch');
+const sectionTitle = document.querySelector('.section-title');
 
-function displayMovies(moviesToDisplay) {
+// Function to fetch content (movies, series, or tv)
+async function fetchContent(type = 'movies') {
+    currentType = type;
+    const titles = {
+        'movies': 'Películas Populares',
+        'series': 'Series de Estreno',
+        'tv': 'Canales de TV en Vivo'
+    };
+    
+    if (sectionTitle) sectionTitle.textContent = titles[type];
+    
+    movieGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+
+    try {
+        const endpoint = type === 'tv' ? '/tv/channels' : `/${type}`;
+        const response = await fetch(`${API_BASE}${endpoint}`);
+        const data = await response.json();
+        
+        if (data && Array.isArray(data)) {
+            allMovies = data;
+        } else if (data[type] && Array.isArray(data[type])) {
+            allMovies = data[type];
+        } else {
+            allMovies = getFallbackData(type);
+        }
+    } catch (error) {
+        console.error(`Error fetching ${type}:`, error);
+        allMovies = getFallbackData(type);
+    }
+    displayMovies(allMovies);
+}
+
+function displayMovies(itemsToDisplay) {
     movieGrid.innerHTML = '';
-    moviesToDisplay.forEach((movie, index) => {
+    if (!itemsToDisplay || itemsToDisplay.length === 0) {
+        movieGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; font-size: 1.2rem;">No se encontró contenido disponible.</p>';
+        return;
+    }
+
+    itemsToDisplay.forEach((item, index) => {
         const card = document.createElement('div');
         card.className = 'movie-card';
         card.setAttribute('data-aos', 'fade-up');
-        card.setAttribute('data-aos-delay', (index * 100).toString());
+        card.setAttribute('data-aos-delay', (index * 50).toString());
+        
+        const title = item.title || item.name || "Sin título";
+        const poster = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : (item.image || item.poster || item.logo || 'https://via.placeholder.com/500x750?text=CineNova');
+        const rating = item.vote_average || item.rating || (currentType === 'tv' ? 'LIVE' : 'N/A');
         
         card.innerHTML = `
-            <img src="${movie.image}" alt="${movie.title}">
+            <img src="${poster}" alt="${title}">
             <div class="movie-info">
-                <h3>${movie.title}</h3>
+                <h3>${title}</h3>
                 <div class="rating">
-                    <i class="fas fa-star"></i> ${movie.rating}
+                    <i class="fas fa-star"></i> ${rating}
                 </div>
             </div>
         `;
         
-        card.addEventListener('click', () => openMovieModal(movie));
+        card.addEventListener('click', () => openModal(item));
         movieGrid.appendChild(card);
     });
 }
 
-function openMovieModal(movie) {
+function openModal(item) {
+    const title = item.title || item.name;
+    const poster = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : (item.image || item.poster || item.logo);
+    const backdrop = item.backdrop_path ? `https://image.tmdb.org/t/p/original${item.backdrop_path}` : (item.backdrop || poster);
+    const rating = item.vote_average || item.rating || 'N/A';
+    const year = item.release_date ? item.release_date.split('-')[0] : (item.year || '');
+    const overview = item.overview || "Disfruta de este contenido en CineNova Oficial.";
+    
+    // Support for IMDb ID as mentioned in the screenshot for the VIP player
+    const imdbId = item.imdb_id || (item.external_ids ? item.external_ids.imdb_id : null);
+    
+    let playAction = `alert('Reproduciendo: ${title}')`;
+    if (currentType === 'tv') {
+        playAction = `alert('Conectando a señal en vivo: ${title}')`;
+    } else if (imdbId) {
+        playAction = `playWithIMDB('${imdbId}')`;
+    }
+
     modalBody.innerHTML = `
-        <div class="modal-hero" style="background-image: url('${movie.backdrop || movie.image}')"></div>
+        <div class="modal-hero" style="background-image: url('${backdrop}')"></div>
         <div class="modal-details">
-            <img src="${movie.image}" alt="${movie.title}">
+            <img src="${poster}" alt="${title}">
             <div class="modal-text">
-                <h2>${movie.title} (${movie.year})</h2>
+                <h2>${title} ${year ? `(${year})` : ''}</h2>
                 <div class="rating" style="margin-bottom: 15px;">
-                    <i class="fas fa-star"></i> ${movie.rating} / 10
+                    <i class="fas fa-star"></i> ${rating} / 10
                 </div>
-                <p>${movie.overview}</p>
-                <button class="btn-primary" onclick="alert('Reproduciendo: ${movie.title}')">
-                    <i class="fas fa-play"></i> Ver Ahora
+                <p>${overview}</p>
+                <button class="btn-primary" onclick="${playAction}">
+                    <i class="fas fa-play"></i> ${currentType === 'tv' ? 'Ver Señal' : 'Ver Ahora'}
                 </button>
             </div>
         </div>
     `;
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
+}
+
+function playWithIMDB(id) {
+    console.log("Mapeo Inteligente de ID:", id);
+    // Here we would integrate the VIP player mentioned in the screenshot
+    window.open(`https://vidsrc.to/embed/movie/${id}`, '_blank');
 }
 
 closeModal.addEventListener('click', () => {
@@ -118,14 +131,44 @@ window.addEventListener('click', (event) => {
     }
 });
 
-searchInput.addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = movies.filter(m => 
-        m.title.toLowerCase().includes(term) || 
-        m.overview.toLowerCase().includes(term)
+searchInput.addEventListener('input', async (e) => {
+    const term = e.target.value.trim().toLowerCase();
+    if (term.length > 2) {
+        try {
+            const endpoint = currentType === 'tv' ? `/tv/channels` : `/${currentType}/search?query=${encodeURIComponent(term)}`;
+            const response = await fetch(`${API_BASE}${endpoint}`);
+            const data = await response.json();
+            const results = Array.isArray(data) ? data : (data.results || []);
+            if (results.length > 0) {
+                displayMovies(results);
+                return;
+            }
+        } catch (error) {
+            console.warn("Search API failed");
+        }
+    }
+    
+    const filtered = allMovies.filter(m => 
+        (m.title || m.name || "").toLowerCase().includes(term) || 
+        (m.overview || "").toLowerCase().includes(term)
     );
     displayMovies(filtered);
 });
 
-// Initialize
-displayMovies(movies);
+function getFallbackData(type) {
+    if (type === 'tv') {
+        return [
+            { name: "HBO Latino", logo: "https://via.placeholder.com/500x750?text=HBO+Latino", rating: "LIVE" },
+            { name: "ESPN 1", logo: "https://via.placeholder.com/500x750?text=ESPN+1", rating: "LIVE" },
+            { name: "Fox Sports", logo: "https://via.placeholder.com/500x750?text=Fox+Sports", rating: "LIVE" }
+        ];
+    }
+    // Fallback static movies
+    return [
+        { title: "Dune: Part Two", image: "https://image.tmdb.org/t/p/w500/1pdfbe1vOZ4Lfbw7G9psZfs9Sqz.jpg", rating: 8.4, year: 2024 },
+        { title: "Godzilla x Kong", image: "https://image.tmdb.org/t/p/w500/v499v88pXpU0I7r4R8mQv8W0A6C.jpg", rating: 7.2, year: 2024 }
+    ];
+}
+
+// Initial Load
+fetchContent('movies');
