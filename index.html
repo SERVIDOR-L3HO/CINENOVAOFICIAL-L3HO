@@ -3,206 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineNova - Oficial</title>
+    <title>CineNova - Premium Experience</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         :root {
             --red: #e50914;
-            --black: #080808;
-            --dark-gray: #121212;
-            --light: #f5f5f5;
-            --gray: #999;
-            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+            --black: #141414;
+            --pure-black: #000;
+            --gray: #808080;
+            --light-gray: #b3b3b3;
+            --white: #fff;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Roboto, sans-serif; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
         
-        body { background: var(--black); color: var(--light); overflow-x: hidden; }
+        body { background: var(--pure-black); color: var(--white); overflow-x: hidden; }
 
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--pure-black); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--red); }
 
-        /* Navbar Profesional */
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 4%; }
+
+        /* Navbar */
         header {
             position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            transition: 0.3s; padding: 15px 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+            transition: background-color 0.5s; padding: 20px 0;
         }
-        header.scrolled { background: var(--black); border-bottom: 1px solid #222; }
+        header.scrolled { background-color: var(--pure-black); padding: 15px 0; }
 
         nav { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 2rem; font-weight: 800; color: var(--red); text-decoration: none; letter-spacing: -1px; }
-        .logo span { color: white; }
-
-        .nav-links { display: flex; gap: 30px; }
+        .logo { font-size: 1.8rem; font-weight: bold; color: var(--red); text-decoration: none; text-transform: uppercase; }
+        
+        .nav-links { display: flex; list-style: none; gap: 20px; align-items: center; }
         .nav-links a { 
-            color: var(--gray); text-decoration: none; font-weight: 600; font-size: 0.9rem;
-            transition: 0.3s; position: relative;
+            color: var(--white); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+            transition: color 0.3s;
         }
-        .nav-links a.active, .nav-links a:hover { color: white; }
-        .nav-links a.active::after {
-            content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background: var(--red);
-        }
+        .nav-links a:hover, .nav-links a.active { color: var(--light-gray); }
 
         .search-box { position: relative; }
         .search-box input {
-            background: rgba(255,255,255,0.1); border: 1px solid #333; color: white;
-            padding: 8px 15px 8px 35px; border-radius: 20px; outline: none; width: 200px; transition: 0.3s;
+            background: rgba(0,0,0,0.75); border: 1px solid var(--white); color: var(--white);
+            padding: 7px 10px 7px 35px; width: 35px; outline: none; transition: width 0.3s;
+            cursor: pointer; opacity: 0.8;
         }
-        .search-box input:focus { width: 300px; border-color: var(--red); }
-        .search-box i { position: absolute; left: 12px; top: 10px; color: var(--gray); }
+        .search-box input:focus { width: 250px; cursor: text; opacity: 1; }
+        .search-box i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--white); pointer-events: none; }
 
-        /* Hero Moderno */
+        /* Hero */
         .hero {
-            height: 100vh; display: flex; align-items: center;
-            background: linear-gradient(to right, var(--black) 30%, transparent), 
-                        url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover; background-position: center; position: relative;
+            height: 80vh; position: relative; display: flex; align-items: center;
+            background-size: cover; background-position: center;
         }
-        .hero-text { max-width: 650px; }
-        .hero-text h1 { font-size: 4.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
-        .hero-text p { font-size: 1.2rem; color: var(--gray); margin-bottom: 30px; }
-
-        .btn-play {
-            background: var(--red); color: white; border: none; padding: 15px 40px;
-            font-size: 1.1rem; font-weight: 700; border-radius: 5px; cursor: pointer; transition: 0.3s;
+        .hero::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 20%;
+            background: linear-gradient(to top, var(--pure-black), transparent);
         }
-        .btn-play:hover { background: #ff0000; transform: scale(1.05); }
+        .hero-content { z-index: 10; max-width: 600px; }
+        .hero-content h1 { font-size: 4rem; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.45); }
+        .hero-content p { font-size: 1.2rem; margin-bottom: 25px; line-height: 1.4; text-shadow: 1px 1px 2px rgba(0,0,0,0.45); }
+        
+        .btn {
+            padding: 12px 30px; border-radius: 4px; font-weight: bold; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 10px; font-size: 1.1rem; border: none; transition: var(--transition);
+        }
+        .btn-play { background: var(--white); color: var(--pure-black); }
+        .btn-play:hover { background: rgba(255,255,255,0.75); }
+        .btn-info { background: rgba(109, 109, 110, 0.7); color: var(--white); margin-left: 10px; }
+        .btn-info:hover { background: rgba(109, 109, 110, 0.4); }
 
-        /* Grid de Contenido */
-        .section { padding: 60px 0; }
-        .section-title { font-size: 2rem; margin-bottom: 40px; font-weight: 800; }
-
+        /* Rows */
+        .row { padding: 40px 0; }
+        .row-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 15px; }
         .movie-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;
         }
 
         .movie-card {
-            background: var(--dark-gray); border-radius: 10px; overflow: hidden;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+            position: relative; border-radius: 4px; overflow: hidden; cursor: pointer;
+            transition: transform 0.3s;
         }
-        .movie-card:hover { transform: scale(1.05); z-index: 10; box-shadow: var(--shadow); }
-
-        .image-wrapper { position: relative; aspect-ratio: 2/3; overflow: hidden; }
-        .image-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .movie-card:hover img { transform: scale(1.1); }
-
-        .overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); opacity: 0; display: flex; align-items: center; justify-content: center;
-            transition: 0.3s;
+        .movie-card:hover { transform: scale(1.08); z-index: 100; }
+        .movie-card img { width: 100%; height: auto; display: block; }
+        
+        .card-info {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            opacity: 0; transition: opacity 0.3s;
         }
-        .movie-card:hover .overlay { opacity: 1; }
-        .play-btn { font-size: 3rem; color: var(--red); }
+        .movie-card:hover .card-info { opacity: 1; }
+        .card-info h4 { font-size: 0.9rem; margin-bottom: 5px; }
+        .card-info .rating { color: #46d369; font-weight: bold; font-size: 0.8rem; }
 
-        .card-content { padding: 15px; }
-        .card-content h3 { font-size: 1rem; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .meta-info { display: flex; justify-content: space-between; align-items: center; }
-        .rating-tag { color: #ffb800; font-weight: bold; font-size: 0.85rem; }
-        .type-tag { font-size: 0.75rem; background: #333; padding: 2px 8px; border-radius: 4px; color: #ccc; }
-
-        /* Loader */
-        .loader-container { grid-column: 1/-1; text-align: center; padding: 100px 0; }
-        .spinner {
-            width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1);
-            border-top-color: var(--red); border-radius: 50%; animation: spin 1s infinite linear;
-            margin: 0 auto 20px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Modal Ultra Creativo */
+        /* Modal / Player */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
+            z-index: 2000; background: rgba(0,0,0,0.9); overflow-y: auto;
         }
         .modal-content {
-            background: #111; width: 90%; max-width: 1100px; margin: 50px auto;
-            border-radius: 20px; overflow: hidden; position: relative;
-            animation: modalIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            width: 90%; max-width: 1000px; margin: 40px auto; background: var(--black);
+            border-radius: 10px; overflow: hidden; position: relative;
         }
-        @keyframes modalIn { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
         .close-modal {
-            position: absolute; right: 25px; top: 25px; font-size: 1.5rem; color: white;
-            cursor: pointer; z-index: 10; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 50%;
+            position: absolute; right: 20px; top: 20px; font-size: 1.5rem; cursor: pointer; z-index: 2100;
         }
-
-        .modal-header-img { height: 450px; background-size: cover; background-position: center; }
-        .modal-info-grid { display: grid; grid-template-columns: 280px 1fr; gap: 40px; padding: 40px; margin-top: -150px; }
-        .modal-poster img { width: 100%; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); border: 2px solid #222; }
         
-        .modal-desc h1 { font-size: 3.5rem; font-weight: 900; margin-bottom: 20px; line-height: 1; }
-        .modal-tags { display: flex; gap: 15px; margin-bottom: 25px; }
-        .tag-gold { color: #000; background: #ffb800; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
-        .tag-white { border: 1px solid #555; padding: 5px 15px; border-radius: 20px; }
-        .tag-red { background: var(--red); padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .player-wrapper { width: 100%; aspect-ratio: 16/9; background: #000; }
+        .player-wrapper iframe { width: 100%; height: 100%; border: none; }
 
-        .modal-desc p { font-size: 1.1rem; color: #bbb; line-height: 1.7; margin-bottom: 30px; }
-        .modal-actions { display: flex; gap: 20px; }
-        .play-now { background: white; color: black; border: none; padding: 15px 35px; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        .add-list { background: rgba(255,255,255,0.1); color: white; border: 1px solid #444; padding: 15px 35px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .details-pane { padding: 30px; }
+        .details-pane h2 { font-size: 2rem; margin-bottom: 15px; }
+        .details-pane .meta { display: flex; gap: 15px; margin-bottom: 20px; color: var(--light-gray); font-size: 0.9rem; }
+        .details-pane p { line-height: 1.6; color: #ccc; }
 
         /* Responsive */
-        @media (max-width: 992px) {
-            .hero-text h1 { font-size: 3rem; }
-            .modal-info-grid { grid-template-columns: 1fr; margin-top: -100px; text-align: center; }
-            .modal-poster { width: 200px; margin: 0 auto; }
-            .modal-desc h1 { font-size: 2.5rem; }
-            .modal-actions { justify-content: center; }
-            .nav-links { display: none; }
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            .hero-content p { font-size: 1rem; }
+            .movie-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
         }
     </style>
 </head>
 <body>
     <header id="header">
-        <nav class="container">
-            <a href="#" class="logo" onclick="loadContent('movies')">CINE<span>NOVA</span></a>
-            <div class="nav-links">
-                <a href="javascript:void(0)" class="active" onclick="switchTab('movies')">PELÍCULAS</a>
-                <a href="javascript:void(0)" onclick="switchTab('series')">SERIES</a>
-                <a href="javascript:void(0)" onclick="switchTab('tv')">CANALES TV</a>
-            </div>
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="movieSearch" placeholder="Buscar...">
-            </div>
-        </nav>
+        <div class="container">
+            <nav>
+                <div style="display: flex; align-items: center; gap: 40px;">
+                    <a href="#" class="logo">CINENova</a>
+                    <ul class="nav-links">
+                        <li><a href="#" class="active" onclick="switchCategory('movies', this)">Inicio</a></li>
+                        <li><a href="#" onclick="switchCategory('series', this)">Series</a></li>
+                        <li><a href="#" onclick="switchCategory('movies', this)">Películas</a></li>
+                        <li><a href="#" onclick="switchCategory('tv', this)">TV en Vivo</a></li>
+                    </ul>
+                </div>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Títulos, personas, géneros">
+                    </div>
+                    <i class="fas fa-bell"></i>
+                    <div style="width: 32px; height: 32px; background: #e50914; border-radius: 4px;"></div>
+                </div>
+            </nav>
+        </div>
     </header>
 
-    <section id="home" class="hero">
+    <section class="hero" id="hero">
         <div class="container">
-            <div class="hero-text" data-aos="fade-right">
-                <h1>Tu Destino <br>Cine Premium</h1>
-                <p>La mayor colección de películas y series en español, ahora en un solo lugar y con la mejor calidad disponible.</p>
-                <button class="btn-play" onclick="document.getElementById('movies').scrollIntoView({behavior: 'smooth'})">EXPLORAR AHORA</button>
+            <div class="hero-content">
+                <h1 id="heroTitle">CineNova Premium</h1>
+                <p id="heroOverview">Disfruta de las mejores películas y series con la mejor calidad y sin interrupciones. El catálogo más completo en un solo lugar.</p>
+                <button class="btn btn-play" id="heroPlayBtn"><i class="fas fa-play"></i> Reproducir</button>
+                <button class="btn btn-info"><i class="fas fa-info-circle"></i> Más información</button>
             </div>
         </div>
     </section>
 
     <main class="container">
-        <section id="movies" class="section">
-            <h2 class="section-title">Películas Populares</h2>
-            <div id="movieGrid" class="movie-grid">
-                <!-- Dinámico -->
+        <div class="row">
+            <h2 class="row-title" id="listTitle">Películas Populares</h2>
+            <div class="movie-grid" id="movieGrid">
+                <!-- Se carga vía JS -->
             </div>
-        </section>
+        </div>
     </main>
 
-    <div id="movieModal" class="modal">
+    <div class="modal" id="modal">
         <div class="modal-content">
-            <span class="close-modal"><i class="fas fa-times"></i></span>
-            <div id="modalBody"></div>
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="player-wrapper" id="playerWrapper">
+                <!-- Iframe del reproductor -->
+            </div>
+            <div class="details-pane" id="detailsPane">
+                <!-- Detalles -->
+            </div>
         </div>
     </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="script.js"></script>
-    <script>
-        AOS.init();
-        window.onscroll = () => {
-            if (window.scrollY > 100) document.getElementById('header').classList.add('scrolled');
-            else document.getElementById('header').classList.remove('scrolled');
-        };
-    </script>
 </body>
 </html>
